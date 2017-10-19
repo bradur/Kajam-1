@@ -6,7 +6,10 @@ public enum Action
     None,
     AimUp,
     AimDown,
-    ShootArrow
+    ShootArrow,
+    MoveLeft,
+    MoveRight,
+    Teleport
 }
 
 [System.Serializable]
@@ -18,7 +21,6 @@ public class GameKey : System.Object
 
 public class KeyManager : MonoBehaviour
 {
-
 
     public static KeyManager main;
 

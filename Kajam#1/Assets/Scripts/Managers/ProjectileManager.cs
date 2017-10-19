@@ -13,27 +13,29 @@ public class ProjectileManager : MonoBehaviour {
     private Transform container;
     public static ProjectileManager main;
 
+    [SerializeField]
+    private Transform bottomBorder;
+
+    private CenteredAroundPointsCamera centeredCamera;
+
     private void Awake()
     {
         main = this;
     }
 
     void Start () {
-    
+        centeredCamera = Camera.main.GetComponent<CenteredAroundPointsCamera>();
     }
 
     void Update () {
     
     }
 
-
-
-    public void SpawnProjectile(Vector3 startingPosition, Quaternion rotation, float speed)
+    public Projectile SpawnProjectile(Vector3 startingPosition, Quaternion rotation, float speed)
     {
         Projectile newProjectile = Instantiate(projectilePrefab);
         newProjectile.transform.SetParent(container, false);
-        newProjectile.transform.position = startingPosition;
-        newProjectile.transform.rotation = rotation;
-        newProjectile.Shoot(speed);
+        newProjectile.Init(startingPosition, rotation, speed, centeredCamera, bottomBorder);
+        return newProjectile;
     }
 }

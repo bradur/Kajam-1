@@ -7,13 +7,12 @@ using System.Collections;
 
 public class PlayerAimCrosshair : MonoBehaviour {
 
-    Rigidbody2D rigidBody2D;
 
     void Start () {
-        rigidBody2D = GetComponent<Rigidbody2D>();
     }
 
     [SerializeField]
+    [Range(0.05f, 2f)]
     private float rotationInterval = 1f;
 
     void Update () {
@@ -21,8 +20,7 @@ public class PlayerAimCrosshair : MonoBehaviour {
         if (factor != 0)
         {
             Vector3 newDirection = transform.forward;
-            transform.rotation = Quaternion.Euler(0, 0, transform.eulerAngles.z + rotationInterval * factor);
-            //transform.rotation = Quaternion.LookRotation(transform.forward, Vector3.up);
+            transform.localRotation = Quaternion.Euler(0, 0, transform.eulerAngles.z + rotationInterval * factor);
         }
     }
 }

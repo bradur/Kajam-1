@@ -20,6 +20,9 @@ public class PlayerShootProjectile : MonoBehaviour {
     private Transform projectilePosition;
 
     [SerializeField]
+    private Transform playerTransform;
+
+    [SerializeField]
     [Range(2f, 10f)]
     private float minSpeed = 6f;
 
@@ -28,6 +31,8 @@ public class PlayerShootProjectile : MonoBehaviour {
     private float maxSpeed = 15f;
 
     private float shootBarMaxScale = 4.2f;
+
+    private Projectile currentProjectile = null;
 
     void Start () {
         shootBarAnimator.StopPlayback();
@@ -46,11 +51,19 @@ public class PlayerShootProjectile : MonoBehaviour {
             shootBarAnimator.enabled = false;
             Shoot();
         }
+        if (KeyManager.main.GetKeyUp(Action.Teleport))
+        {
+            if (currentProjectile != null)
+            {
+                playerTransform.transform.position = currentProjectile.transform.position;
+                currentProjectile.Die();
+            }
+        }
     }
 
     void Shoot()
     {
         float speed = Mathf.Clamp((shootBarMask.localScale.x / shootBarMaxScale) * maxSpeed, minSpeed, maxSpeed);
-        ProjectileManager.main.SpawnProjectile(projectilePosition.position, transform.rotation, speed);
+        currentProjectile = ProjectileManager.main.SpawnProjectile(projectilePosition.position, transform.rotation, speed);
     }
 }
