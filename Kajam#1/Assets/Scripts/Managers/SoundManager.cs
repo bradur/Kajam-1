@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 public enum SoundType
 {
-    None
+    None,
+    Teleport
 }
 
 public class SoundManager : MonoBehaviour {
@@ -55,6 +56,20 @@ public class SoundManager : MonoBehaviour {
         }
     }
 
+    public void PlayActionSound(Action actionType)
+    {
+        if (!sfxMuted)
+        {
+            foreach (GameSound gameSound in sounds)
+            {
+                if (gameSound.actionType == actionType)
+                {
+                    gameSound.sound.Play();
+                }
+            }
+        }
+    }
+
     public void ToggleSfx()
     {
         sfxMuted = !sfxMuted;
@@ -81,5 +96,6 @@ public class SoundManager : MonoBehaviour {
 public class GameSound : System.Object
 {
     public SoundType soundType;
+    public Action actionType;
     public AudioSource sound;
 }

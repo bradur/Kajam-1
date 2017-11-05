@@ -17,8 +17,11 @@ public class PlayerMove : MonoBehaviour {
     private float maxSpeed = 1f;
     private float velocityX = 0f;
 
+    private Vector3 originalPosition;
+
     void Start () {
         rigidBody2D = GetComponent<Rigidbody2D>();
+        originalPosition = transform.position;
     }
 
     [SerializeField]
@@ -31,7 +34,7 @@ public class PlayerMove : MonoBehaviour {
             //transform.forward = -Vector3.right;
         }
         bool grounded = Mathf.Abs(rigidBody2D.velocity.y) < 0.01f;
-        if (KeyManager.main.GetKey(Action.MoveLeft) && grounded) {
+        if (KeyManager.main.GetKey(Action.MoveLeft)) {
             velocityX = rigidBody2D.velocity.x - speedInterval;
             if (Mathf.Abs(velocityX) > maxSpeed)
             {
@@ -45,7 +48,7 @@ public class PlayerMove : MonoBehaviour {
         {
             transform.right = Vector3.right;
         }
-        if (KeyManager.main.GetKey(Action.MoveRight) && grounded)
+        if (KeyManager.main.GetKey(Action.MoveRight))
         {
             velocityX = rigidBody2D.velocity.x + speedInterval;
             if (velocityX > maxSpeed)
@@ -62,6 +65,7 @@ public class PlayerMove : MonoBehaviour {
 
     private void Die()
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        transform.position = originalPosition;
     }
 }

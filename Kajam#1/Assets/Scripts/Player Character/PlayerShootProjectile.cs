@@ -53,8 +53,9 @@ public class PlayerShootProjectile : MonoBehaviour {
         }
         if (KeyManager.main.GetKeyUp(Action.Teleport))
         {
-            if (currentProjectile != null)
+            if (currentProjectile != null && currentProjectile.Stationary)
             {
+                SoundManager.main.PlayActionSound(Action.Teleport);
                 playerTransform.transform.position = currentProjectile.transform.position;
                 currentProjectile.Die();
             }

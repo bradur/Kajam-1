@@ -26,6 +26,10 @@ public class CenteredAroundPointsCamera : MonoBehaviour
     [Range(0, 1f)]
     private float returnToSingleSpeed = 0.05f;
 
+    [SerializeField]
+    [Range(0, 1f)]
+    private float changeBackSpeed;
+
     private float aspectRatio;
 
     private Vector3 startingPosition;
@@ -77,29 +81,34 @@ public class CenteredAroundPointsCamera : MonoBehaviour
 
     public void RemovePoint(Transform removeThisPoint)
     {
-        points.Remove(removeThisPoint);
-        if (points.Count == 1)
+        if (points.Remove(removeThisPoint))
         {
-            speed = returnToSingleSpeed;
+            if (points.Count == 1)
+            {
+                speed = returnToSingleSpeed;
+            }
+            cameraSizeChangeRatio = 0f;
+            positionFollowSmoothTime = originalPositionFollowSmoothTime;
         }
-        cameraSizeChangeRatio = 0f;
-        positionFollowSmoothTime = originalPositionFollowSmoothTime;
     }
 
     private void Update()
     {
-        maxDistance = Vector3.zero;
-        minDistance = Vector3.zero;
+        maxDistance = points[0].position;
+        minDistance = points[0].position;
         newPosition = Vector3.zero;
         foreach (Transform point in points)
         {
             newPosition += point.position;
+            Debug.Log(point.position + " => " +minDistance.x + ", " + maxDistance.x);
             maxDistance = CalculateMax(point.position, maxDistance);
             minDistance = CalculateMin(point.position, minDistance);
+            Debug.Log(point.position + " => " + minDistance.x + ", " + maxDistance.x);
+
         }
         float distanceX = Mathf.Abs(maxDistance.x - minDistance.x);
         float distanceY = Mathf.Abs(maxDistance.y - minDistance.y);
-
+        
         float cameraHeight = thisCamera.orthographicSize * 2;
         float cameraWidth = cameraHeight * aspectRatio;
         if (points.Count == 1)
@@ -110,34 +119,49 @@ public class CenteredAroundPointsCamera : MonoBehaviour
         else
         {
             float heightDifference = cameraHeight - (distanceY + verticalBufferHeight);
-            if (heightDifference < verticalBufferHeight)
-            {
-                if (heightDifference < 0)
-                {
-                    heightDifference = 0f;
-                }
-                cameraSizeChangeRatio = 1 - heightDifference / verticalBufferHeight;
-                if (cameraHeight < (distanceY + verticalBufferHeight))
-                {
-                    cameraHeight = distanceY + verticalBufferHeight;
-                }
-            }
             float widthDifference = cameraWidth - (distanceX + horizontalBufferWidth);
-            if (widthDifference < horizontalBufferWidth)
-            {
-                if (widthDifference < 0)
-                {
-                    widthDifference = 0f;
-                }
-                cameraSizeChangeRatio = 1 - widthDifference / horizontalBufferWidth;
-                if (cameraWidth < (distanceX + horizontalBufferWidth))
-                {
-                    cameraWidth = distanceX + horizontalBufferWidth;
-                    cameraHeight = cameraWidth / aspectRatio;
-                }
-            }
 
-            cameraHeight /= 2;
+            //Debug.Log(distanceX);
+            if (heightDifference >= verticalBufferHeight && widthDifference >= horizontalBufferWidth)
+            {
+                /*Debug.Log(cameraHeight + ">" + (distanceY + verticalBufferHeight));
+                Debug.Log(heightDifference + "<" + verticalBufferHeight);*/
+                float bufferedVertical = originalOrthographicSize + verticalBufferHeight;
+                float bufferedHoriziontal = bufferedVertical * aspectRatio;
+                //Debug.Log(cameraHeight + " > " + bufferedVertical + " || " + (cameraWidth / aspectRatio) +" > "+ bufferedHoriziontal);
+                
+                if (cameraHeight > bufferedVertical || (cameraWidth / aspectRatio) > bufferedHoriziontal)
+                {
+                    cameraHeight = originalOrthographicSize;
+                    cameraSizeChangeRatio += Time.deltaTime * changeBackSpeed;
+                }
+
+                //cameraSizeChangeRatio += Time.deltaTime * speed;
+                //cameraSizeChangeRatio += Time.deltaTime * speed;
+                //cameraSizeChangeRatio = 1 - heightDifference / originalOrthographicSize;
+            }
+            else
+            {
+                if (heightDifference < verticalBufferHeight)
+                {
+                    cameraSizeChangeRatio = 1 - heightDifference / verticalBufferHeight;
+                    if (cameraHeight < (distanceY + verticalBufferHeight))
+                    {
+                        cameraHeight = distanceY + verticalBufferHeight;
+                    }
+                }
+                
+                if (widthDifference < horizontalBufferWidth)
+                {
+                    cameraSizeChangeRatio = 1 - widthDifference / horizontalBufferWidth;
+                    if (cameraWidth < (distanceX + horizontalBufferWidth))
+                    {
+                        cameraWidth = distanceX + horizontalBufferWidth;
+                        cameraHeight = cameraWidth / aspectRatio;
+                    }
+                }
+                cameraHeight /= 2;
+            }
         }
         positionFollowSmoothTime = originalPositionFollowSmoothTime - (originalPositionFollowSmoothTime * cameraSizeChangeRatio);
         thisCamera.orthographicSize = Mathf.Lerp(thisCamera.orthographicSize, cameraHeight, cameraSizeChangeRatio);

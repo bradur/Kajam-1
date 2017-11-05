@@ -8,10 +8,11 @@ using System.Collections;
 public class ProjectileManager : MonoBehaviour {
 
     [SerializeField]
-    private Projectile projectilePrefab;
-    [SerializeField]
     private Transform container;
     public static ProjectileManager main;
+
+    [SerializeField]
+    private ProjectilePool projectilePool;
 
     [SerializeField]
     private Transform bottomBorder;
@@ -33,9 +34,13 @@ public class ProjectileManager : MonoBehaviour {
 
     public Projectile SpawnProjectile(Vector3 startingPosition, Quaternion rotation, float speed)
     {
-        Projectile newProjectile = Instantiate(projectilePrefab);
-        newProjectile.transform.SetParent(container, false);
-        newProjectile.Init(startingPosition, rotation, speed, centeredCamera, bottomBorder);
+        Projectile newProjectile = projectilePool.WakeUp();
+        if (newProjectile != null)
+        {
+            newProjectile.gameObject.SetActive(true);
+            newProjectile.transform.SetParent(container, false);
+            newProjectile.Init(startingPosition, rotation, speed, centeredCamera, bottomBorder);
+        }
         return newProjectile;
     }
 }
