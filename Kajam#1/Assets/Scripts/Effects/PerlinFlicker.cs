@@ -52,8 +52,8 @@ public class PerlinFlicker : MonoBehaviour
         float noise2 = Mathf.PerlinNoise(random, Time.time * speed * 2);
         lightObject.range = Mathf.Lerp(minRange, maxRange, noise2);
         float noise3 = Mathf.PerlinNoise(random, Time.time * speed / 2);
-        Vector3 newPos = lightObject.transform.position;
-        lightObject.transform.position = new Vector3(newPos.x, newPos.y, Mathf.Lerp(minZHeight, maxZHeight, noise3));
+        Vector3 newPos = lightObject.transform.localPosition;
+        lightObject.transform.localPosition = new Vector3(newPos.x, newPos.y, Mathf.Lerp(minZHeight, maxZHeight, noise3));
     }
 
 }

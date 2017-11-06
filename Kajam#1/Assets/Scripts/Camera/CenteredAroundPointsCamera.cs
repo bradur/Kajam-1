@@ -100,11 +100,8 @@ public class CenteredAroundPointsCamera : MonoBehaviour
         foreach (Transform point in points)
         {
             newPosition += point.position;
-            Debug.Log(point.position + " => " +minDistance.x + ", " + maxDistance.x);
             maxDistance = CalculateMax(point.position, maxDistance);
             minDistance = CalculateMin(point.position, minDistance);
-            Debug.Log(point.position + " => " + minDistance.x + ", " + maxDistance.x);
-
         }
         float distanceX = Mathf.Abs(maxDistance.x - minDistance.x);
         float distanceY = Mathf.Abs(maxDistance.y - minDistance.y);
@@ -121,24 +118,15 @@ public class CenteredAroundPointsCamera : MonoBehaviour
             float heightDifference = cameraHeight - (distanceY + verticalBufferHeight);
             float widthDifference = cameraWidth - (distanceX + horizontalBufferWidth);
 
-            //Debug.Log(distanceX);
             if (heightDifference >= verticalBufferHeight && widthDifference >= horizontalBufferWidth)
             {
-                /*Debug.Log(cameraHeight + ">" + (distanceY + verticalBufferHeight));
-                Debug.Log(heightDifference + "<" + verticalBufferHeight);*/
                 float bufferedVertical = originalOrthographicSize + verticalBufferHeight;
                 float bufferedHoriziontal = bufferedVertical * aspectRatio;
-                //Debug.Log(cameraHeight + " > " + bufferedVertical + " || " + (cameraWidth / aspectRatio) +" > "+ bufferedHoriziontal);
-                
                 if (cameraHeight > bufferedVertical || (cameraWidth / aspectRatio) > bufferedHoriziontal)
                 {
                     cameraHeight = originalOrthographicSize;
                     cameraSizeChangeRatio += Time.deltaTime * changeBackSpeed;
                 }
-
-                //cameraSizeChangeRatio += Time.deltaTime * speed;
-                //cameraSizeChangeRatio += Time.deltaTime * speed;
-                //cameraSizeChangeRatio = 1 - heightDifference / originalOrthographicSize;
             }
             else
             {

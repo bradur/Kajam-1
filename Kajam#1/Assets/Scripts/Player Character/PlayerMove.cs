@@ -17,7 +17,15 @@ public class PlayerMove : MonoBehaviour {
     private float maxSpeed = 1f;
     private float velocityX = 0f;
 
+    /*
+    [Range(1f, 10f)]
+    [SerializeField]
+    private float forceSpeed;*/
+
     private Vector3 originalPosition;
+
+    [SerializeField]
+    private Transform playerAimer;
 
     void Start () {
         rigidBody2D = GetComponent<Rigidbody2D>();
@@ -30,7 +38,8 @@ public class PlayerMove : MonoBehaviour {
     void Update () {
         if (KeyManager.main.GetKeyDown(Action.MoveLeft))
         {
-            transform.right = -Vector2.right;
+            //transform.right = -Vector2.right;
+            playerAimer.right = -Vector2.right;
             //transform.forward = -Vector3.right;
         }
         bool grounded = Mathf.Abs(rigidBody2D.velocity.y) < 0.01f;
@@ -41,12 +50,13 @@ public class PlayerMove : MonoBehaviour {
                 velocityX = -maxSpeed;
             }
             rigidBody2D.velocity = new Vector2(velocityX, rigidBody2D.velocity.y);
-            Debug.Log(string.Format("{0} , {1}", velocityX, speedInterval * Time.deltaTime));
+            //rigidBody2D.AddForce(new Vector2(-forceSpeed, 0f), ForceMode2D.Force);
         }
         
         if (KeyManager.main.GetKeyDown(Action.MoveRight))
         {
-            transform.right = Vector3.right;
+            //transform.right = Vector2.right;
+            playerAimer.right = Vector2.right;
         }
         if (KeyManager.main.GetKey(Action.MoveRight))
         {
@@ -56,6 +66,7 @@ public class PlayerMove : MonoBehaviour {
                 velocityX = maxSpeed;
             }
             rigidBody2D.velocity = new Vector2(velocityX, rigidBody2D.velocity.y);
+            //rigidBody2D.AddForce(new Vector2(forceSpeed, 0f), ForceMode2D.Force);
         }
         if (transform.position.y < bottomBorder.position.y)
         {
