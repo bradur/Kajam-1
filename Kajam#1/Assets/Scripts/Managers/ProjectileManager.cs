@@ -32,6 +32,22 @@ public class ProjectileManager : MonoBehaviour {
     
     }
 
+    private Projectile currentProjectile;
+
+    public void KillCurrentProjectile()
+    {
+        if (currentProjectile != null)
+        {
+            currentProjectile.Die();
+            currentProjectile = null;
+        }
+    }
+
+    public bool CurrentProjectileIsAlive()
+    {
+        return currentProjectile != null;
+    }
+
     public Projectile SpawnProjectile(Vector3 startingPosition, Quaternion rotation, float speed)
     {
         Projectile newProjectile = projectilePool.WakeUp();
@@ -41,6 +57,7 @@ public class ProjectileManager : MonoBehaviour {
             newProjectile.transform.SetParent(container, false);
             newProjectile.Init(startingPosition, rotation, speed, centeredCamera, bottomBorder);
         }
+        currentProjectile = newProjectile;
         return newProjectile;
     }
 }
