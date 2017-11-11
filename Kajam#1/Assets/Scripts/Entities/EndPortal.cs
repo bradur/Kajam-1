@@ -9,7 +9,7 @@ public class EndPortal : MonoBehaviour
 {
 
     private Rigidbody2D playerRigidbody2D;
-    private float myMass = 75;
+    private float myMass = 50;
 
     void Start()
     {
@@ -60,16 +60,22 @@ public class EndPortal : MonoBehaviour
     {
         if (collider.gameObject.tag == "Player")
         {
-            if (Vector2.Distance(transform.position, collider.gameObject.transform.position) < 0.05f)
+            float dist = Vector2.Distance(transform.position, collider.transform.position);
+            float pullMass = myMass;
+            if (dist < 0.5f)
+            {
+                playerRigidbody2D.gravityScale = 0f;
+                pullMass = myMass / 5;
+            }
+            if (dist < 0.05f)
             {
                 playerRigidbody2D.transform.position = Vector2.Lerp(playerRigidbody2D.transform.position, transform.position, Time.unscaledDeltaTime * pullSpeed);
-                playerRigidbody2D.gravityScale = 0f;
             }
             else
             {
                 Vector2 force = transform.position - collider.gameObject.transform.position;
                 force.Normalize();
-                playerRigidbody2D.AddForce(force * playerRigidbody2D.mass * myMass / force.magnitude);
+                playerRigidbody2D.AddForce(force * playerRigidbody2D.mass * pullMass / force.magnitude);
             }
         }
     }
