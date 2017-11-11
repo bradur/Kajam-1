@@ -12,10 +12,8 @@ public class TeleportProjectileOnCollision : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision2D)
     {
-        Debug.Log(collision2D.gameObject.GetComponent<Projectile>() != null);
         if (collision2D.gameObject.GetComponent<Projectile>() != null)
         {
-            Debug.Log("sending" + collision2D.gameObject.transform.position + " to " + target.position);
             collision2D.gameObject.transform.position = target.position;
         }
     }
@@ -24,7 +22,6 @@ public class TeleportProjectileOnCollision : MonoBehaviour {
     {
         if (collider2D.gameObject.GetComponent<Projectile>() != null)
         {
-            Debug.Log("sending" + collider2D.gameObject.transform.position + " to " + target.position);
             collider2D.gameObject.transform.position = target.position;
         }
     }

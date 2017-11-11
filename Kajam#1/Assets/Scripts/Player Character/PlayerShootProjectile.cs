@@ -34,6 +34,7 @@ public class PlayerShootProjectile : MonoBehaviour {
 
     private Projectile currentProjectile = null;
 
+
     void Start () {
         shootBarAnimator.StopPlayback();
     }
@@ -56,7 +57,7 @@ public class PlayerShootProjectile : MonoBehaviour {
             if (currentProjectile != null && currentProjectile.IsActive && currentProjectile.Stationary)
             {
                 SoundManager.main.PlayActionSound(Action.Teleport);
-                playerTransform.transform.position = currentProjectile.transform.position;
+                playerTransform.transform.position = (Vector2)currentProjectile.transform.position;
                 currentProjectile.Die();
             }
         }

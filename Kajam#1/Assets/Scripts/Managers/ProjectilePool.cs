@@ -74,6 +74,11 @@ public class ProjectilePool : MonoBehaviour {
         return newProjectile;
     }
 
+    public List<Projectile> GetCurrentProjectiles ()
+    {
+        return currentProjectiles;
+    }
+
     void Update () {
     
     }

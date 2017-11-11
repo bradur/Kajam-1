@@ -92,6 +92,22 @@ public class CenteredAroundPointsCamera : MonoBehaviour
         }
     }
 
+    public void RemoveAllPointsButPlayer ()
+    {
+        for (int i = 0; points.Count > i; i += 1)
+        {
+            if (points[i].gameObject.tag != "Player")
+            {
+                points.Remove(points[i]);
+            }
+        }
+        Debug.Log("<color=red>" + thisCamera.orthographicSize + "</color>");
+        cameraSizeChangeRatio = 0f;
+        speed = returnToSingleSpeed;
+        //positionFollowSmoothTime = originalPositionFollowSmoothTime;
+        //speed = cachedSpeed;
+    }
+
     private void Update()
     {
         maxDistance = points[0].position;

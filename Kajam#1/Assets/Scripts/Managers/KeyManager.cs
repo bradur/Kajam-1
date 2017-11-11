@@ -9,6 +9,8 @@ public enum Action
     ShootArrow,
     MoveLeft,
     MoveRight,
+    MoveUp,
+    MoveDown,
     Teleport
 }
 

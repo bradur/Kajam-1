@@ -9,7 +9,8 @@ public class EndPortal : MonoBehaviour
 {
 
     private Rigidbody2D playerRigidbody2D;
-    private float myMass = 50;
+    private PlayerMove playerMove;
+    private float myMass = 58;
 
     void Start()
     {
@@ -17,6 +18,8 @@ public class EndPortal : MonoBehaviour
         playerRigidbody2D = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
         originalAngularDrag = playerRigidbody2D.angularDrag;
         originalGravityScale = playerRigidbody2D.gravityScale;
+        originalZPosition = playerRigidbody2D.transform.position.z;
+        playerMove = playerRigidbody2D.GetComponent<PlayerMove>();
     }
 
     private bool isTeleporting = false;
@@ -29,27 +32,44 @@ public class EndPortal : MonoBehaviour
     private float zPosition = 0f;
     private float originalAngularDrag;
     private float originalGravityScale;
+    private float originalZPosition;
+    private bool isComingOutOfTeleport = false;
 
     void Update()
     {
         if (hasHit && !isTeleporting)
         {
-            if (Vector2.Distance(transform.position, playerRigidbody2D.transform.position) > 1.1f)
+            if (Vector2.Distance(transform.position, playerRigidbody2D.transform.position) > 2f)
             {
                 ResetPlayer();
             }
             else if (KeyManager.main.GetKeyDown(Action.Teleport) && !ProjectileManager.main.CurrentProjectileIsAlive())
             {
-
+                playerMove.DisableShooting();
                 focusCamera.Init(transform);
                 isTeleporting = true;
                 zPosition = playerRigidbody2D.transform.position.z;
             }
-        } else if (isTeleporting) { 
-            Vector3 playerPosition = Vector3.Lerp(playerRigidbody2D.transform.position, transform.position, pullSpeed * Time.unscaledDeltaTime);
+
+        }
+        else if (isTeleporting)
+        {
             zPosition += Time.unscaledDeltaTime * zSpeed;
-            playerPosition.z = zPosition;
-            playerRigidbody2D.transform.position = playerPosition;
+            if (zPosition >= 6f)
+            {
+                isTeleporting = false;
+                isComingOutOfTeleport = true;
+                LevelManager.main.LoadNextLevel();
+                focusCamera.Deactivate();
+                ResetPlayer();
+                playerMove.ComeOutOfTeleport();
+            }
+            else
+            {
+                Vector3 playerPosition = Vector3.Lerp(playerRigidbody2D.transform.position, transform.position, pullSpeed * Time.unscaledDeltaTime);
+                playerPosition.z = zPosition;
+                playerRigidbody2D.transform.position = playerPosition;
+            }
         }
     }
 
@@ -64,7 +84,7 @@ public class EndPortal : MonoBehaviour
             float pullMass = myMass;
             if (dist < 0.5f)
             {
-                playerRigidbody2D.gravityScale = 0f;
+                StartPullingPlayer();
                 pullMass = myMass / 5;
             }
             if (dist < 0.05f)
@@ -80,14 +100,22 @@ public class EndPortal : MonoBehaviour
         }
     }
 
+    private void StartPullingPlayer()
+    {
+        playerMove.StartPulling();
+        playerRigidbody2D.gravityScale = 0f;
+    }
+
     private void ResetPlayer()
     {
-        Debug.Log("RESET!");
+        playerMove.StopPulling();
         hasHit = false;
         isTeleporting = false;
         zPosition = 0f;
         playerRigidbody2D.angularDrag = originalAngularDrag;
         playerRigidbody2D.gravityScale = originalGravityScale;
+        /*Vector3 playerPos = playerRigidbody2D.transform.position;
+        playerRigidbody2D.transform.position = new Vector3(playerPos.x, playerPos.y, originalZPosition);*/
     }
 
     private void OnTriggerEnter2D(Collider2D collider)

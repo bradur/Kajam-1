@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ProjectileManager : MonoBehaviour {
 
@@ -47,6 +48,24 @@ public class ProjectileManager : MonoBehaviour {
     {
         return currentProjectile != null;
     }
+
+    public List<Projectile> GetCurrentProjectiles()
+    {
+        return projectilePool.GetCurrentProjectiles();
+    }
+
+    /*public List<Projectile> GetNearbyProjectiles(Vector2 position, float maxDistance)
+    {
+        List<Projectile> projectiles = new List<Projectile>();
+        foreach (Projectile projectile in projectilePool.GetCurrentProjectiles())
+        {
+            if (Vector2.Distance(position, projectile.transform.position) <= maxDistance)
+            {
+                projectiles.Add(projectile);
+            }
+        }
+        return projectiles;
+    }*/
 
     public Projectile SpawnProjectile(Vector3 startingPosition, Quaternion rotation, float speed)
     {

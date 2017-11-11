@@ -5,7 +5,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerMove : MonoBehaviour {
+public class PlayerMove : MonoBehaviour
+{
 
     private Rigidbody2D rigidBody2D;
 
@@ -27,51 +28,130 @@ public class PlayerMove : MonoBehaviour {
     [SerializeField]
     private Transform playerAimer;
 
-    void Start () {
+    [SerializeField]
+    private PlayerShootProjectile playerShoot;
+
+    void Start()
+    {
         rigidBody2D = GetComponent<Rigidbody2D>();
         originalPosition = transform.position;
+        originalZPosition = originalPosition.z;
     }
 
     [SerializeField]
     private Transform bottomBorder;
 
-    void Update () {
-        if (KeyManager.main.GetKeyDown(Action.MoveLeft))
+    private bool allowVerticalMovement = false;
+    private bool comingOutOfTeleport = false;
+    private float originalZPosition;
+    private float zSpeed = 5f;
+    private float zPosition;
+    private float pullSpeed = 25f;
+    private Vector3 targetPosition;
+    void Update()
+    {
+        if (comingOutOfTeleport)
         {
-            //transform.right = -Vector2.right;
-            playerAimer.right = -Vector2.right;
-            //transform.forward = -Vector3.right;
-        }
-        bool grounded = Mathf.Abs(rigidBody2D.velocity.y) < 0.01f;
-        if (KeyManager.main.GetKey(Action.MoveLeft)) {
-            velocityX = rigidBody2D.velocity.x - speedInterval;
-            if (Mathf.Abs(velocityX) > maxSpeed)
+            zPosition -= Time.unscaledDeltaTime * zSpeed;
+            if (zPosition <= originalZPosition)
             {
-                velocityX = -maxSpeed;
+                zPosition = originalZPosition;
+                comingOutOfTeleport = false;
+                EnableShooting();
             }
-            rigidBody2D.velocity = new Vector2(velocityX, rigidBody2D.velocity.y);
-            //rigidBody2D.AddForce(new Vector2(-forceSpeed, 0f), ForceMode2D.Force);
+            targetPosition = transform.position;
+            targetPosition.z = zPosition;
+            transform.position = targetPosition;
         }
-        
-        if (KeyManager.main.GetKeyDown(Action.MoveRight))
+        else
         {
-            //transform.right = Vector2.right;
-            playerAimer.right = Vector2.right;
-        }
-        if (KeyManager.main.GetKey(Action.MoveRight))
-        {
-            velocityX = rigidBody2D.velocity.x + speedInterval;
-            if (velocityX > maxSpeed)
+            if (KeyManager.main.GetKeyDown(Action.MoveLeft))
             {
-                velocityX = maxSpeed;
+                //transform.right = -Vector2.right;
+                playerAimer.right = -Vector2.right;
+                //transform.forward = -Vector3.right;
             }
-            rigidBody2D.velocity = new Vector2(velocityX, rigidBody2D.velocity.y);
-            //rigidBody2D.AddForce(new Vector2(forceSpeed, 0f), ForceMode2D.Force);
+            else if (KeyManager.main.GetKeyDown(Action.MoveRight))
+            {
+                //transform.right = Vector2.right;
+                playerAimer.right = Vector2.right;
+            }
+
+            if (KeyManager.main.GetKey(Action.MoveLeft))
+            {
+                velocityX = rigidBody2D.velocity.x - speedInterval;
+                if (Mathf.Abs(velocityX) > maxSpeed)
+                {
+                    velocityX = -maxSpeed;
+                }
+                rigidBody2D.velocity = new Vector2(velocityX, rigidBody2D.velocity.y);
+                //rigidBody2D.AddForce(new Vector2(-forceSpeed, 0f), ForceMode2D.Force);
+            }
+            else if (KeyManager.main.GetKey(Action.MoveRight))
+            {
+                velocityX = rigidBody2D.velocity.x + speedInterval;
+                if (velocityX > maxSpeed)
+                {
+                    velocityX = maxSpeed;
+                }
+                rigidBody2D.velocity = new Vector2(velocityX, rigidBody2D.velocity.y);
+                //rigidBody2D.AddForce(new Vector2(forceSpeed, 0f), ForceMode2D.Force);
+            }
+            if (allowVerticalMovement)
+            {
+                float velocityY;
+                if (KeyManager.main.GetKey(Action.MoveUp))
+                {
+                    velocityY = rigidBody2D.velocity.y + speedInterval;
+                    if (velocityY > maxSpeed)
+                    {
+                        velocityY = maxSpeed;
+                    }
+                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, velocityY);
+                    //rigidBody2D.AddForce(new Vector2(forceSpeed, 0f), ForceMode2D.Force);
+                }
+                else if (KeyManager.main.GetKey(Action.MoveDown))
+                {
+                    velocityY = rigidBody2D.velocity.y - speedInterval;
+                    if (velocityY > maxSpeed)
+                    {
+                        velocityY = maxSpeed;
+                    }
+                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, velocityY);
+                    //rigidBody2D.AddForce(new Vector2(forceSpeed, 0f), ForceMode2D.Force);
+                }
+            }
         }
         if (transform.position.y < bottomBorder.position.y)
         {
             Die();
         }
+    }
+
+    public void DisableShooting()
+    {
+        playerShoot.gameObject.SetActive(false);
+    }
+
+    public void EnableShooting()
+    {
+        playerShoot.gameObject.SetActive(true);
+    }
+
+    public void ComeOutOfTeleport()
+    {
+        comingOutOfTeleport = true;
+        zPosition = transform.position.z;
+    }
+
+    public void StartPulling()
+    {
+        allowVerticalMovement = true;
+    }
+
+    public void StopPulling()
+    {
+        allowVerticalMovement = false;
     }
 
     private void Die()

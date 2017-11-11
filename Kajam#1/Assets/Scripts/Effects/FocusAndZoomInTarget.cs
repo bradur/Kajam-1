@@ -21,8 +21,15 @@ public class FocusAndZoomInTarget : MonoBehaviour {
     [Range(0, 1f)]
     private float minSize = 0.5f;
 
+    private Transform playerTransform;
+    private CenteredAroundPointsCamera capCamera;
+    private float originalZ;
+
     void Start () {
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         mainCamera = Camera.main;
+        capCamera = mainCamera.GetComponent<CenteredAroundPointsCamera>();
+        originalZ = capCamera.transform.position.z;
     }
 
     void Update () {
@@ -31,7 +38,7 @@ public class FocusAndZoomInTarget : MonoBehaviour {
             smoothDampRatio -= Time.unscaledDeltaTime * speed;
             ratio += Time.unscaledDeltaTime * speed;
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, minSize, ratio);
-            transform.position = Vector2.SmoothDamp(
+            Vector3 newPos = Vector2.SmoothDamp(
                 transform.position,
                 target.position,
                 ref currentVelocity,
@@ -39,12 +46,27 @@ public class FocusAndZoomInTarget : MonoBehaviour {
                 1f,
                 Time.unscaledDeltaTime
             );
+            newPos.z = originalZ;
+            transform.position = newPos;
             if (Vector2.Distance(transform.position, target.position) < 0.01f && Mathf.Abs(mainCamera.orthographicSize - minSize) < 0.01f)
             {
                 active = false;
-                Debug.Log("reached!");
             }
         }
+    }
+
+    public void Deactivate()
+    {
+        Vector3 newPos = playerTransform.position;
+        newPos.z = originalZ;
+        capCamera.transform.position = newPos;
+        capCamera.enabled = true;
+        capCamera.RemoveAllPointsButPlayer();
+        Time.timeScale = 1f;
+        this.target = null;
+        ratio = 0f;
+        smoothDampRatio = 1f;
+        active = false;
     }
 
     public void Init(Transform target)
@@ -54,6 +76,6 @@ public class FocusAndZoomInTarget : MonoBehaviour {
         ratio = 0f;
         smoothDampRatio = 1f;
         active = true;
-        mainCamera.GetComponent<CenteredAroundPointsCamera>().enabled = false;
+        capCamera.enabled = false;
     }
 }

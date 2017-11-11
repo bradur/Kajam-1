@@ -21,14 +21,22 @@ public class Level : MonoBehaviour
 
     }
 
-    public void Init()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        player.transform.position = playerPosition.position;
-    }
-
-    public void Kill()
+    public void Deactivate()
     {
         gameObject.SetActive(false);
     }
+
+    public void Init()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        float originalZ = player.transform.position.z;
+        Vector3 newPosition = playerPosition.position;
+        newPosition.z = originalZ;
+        player.transform.position = newPosition;
+    }
+
+    /*public void Kill()
+    {
+        gameObject.SetActive(false);
+    }*/
 }

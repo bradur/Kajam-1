@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4364977430011104}
+  - component: {fileID: 114216809568066036}
   m_Layer: 0
   m_Name: StarContainer
   m_TagString: Untagged
@@ -156,7 +157,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1658717465605918}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.54, y: 8.34, z: -0.3790002}
+  m_LocalPosition: {x: 0.31, y: 3.43, z: -0.3790002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4364977430011104}
@@ -178,7 +179,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.68
+  m_Radius: 0.32
 --- !u!95 &95641365848533668
 Animator:
   serializedVersion: 3
@@ -232,6 +233,20 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &114216809568066036
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1342564660634846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: addede235d447d7459e3640b35ef2343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  push: 0
+  mass: 15.3
+  radius: 3.1
 --- !u!114 &114318602999079586
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -337,14 +352,14 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 298961359
+  randomSeed: 721508785
   InitialModule:
     serializedVersion: 3
     enabled: 1
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.69
+      scalar: 1.45
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -427,7 +442,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.46323532, g: 1, b: 0.48914814, a: 1}
+      maxColor: {r: 0, g: 1, b: 0.67058825, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -802,7 +817,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.83
+      value: 0.82
       mode: 0
       spread: 0
       speed:
@@ -3629,7 +3644,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
