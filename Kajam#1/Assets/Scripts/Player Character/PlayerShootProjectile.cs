@@ -45,9 +45,12 @@ public class PlayerShootProjectile : MonoBehaviour {
             shootBarSprite.enabled = true;
             shootBarAnimator.enabled = true;
             shootBarAnimator.Play("ShootBarLoop", -1, 0f);
+            SoundManager.main.PlaySound(SoundType.Charge);
         }
         if (KeyManager.main.GetKeyUp(Action.ShootArrow))
         {
+            SoundManager.main.StopSound(SoundType.Charge);
+            SoundManager.main.PlayRandomSound(SoundType.Shoot);
             shootBarSprite.enabled = false;
             shootBarAnimator.enabled = false;
             Shoot();

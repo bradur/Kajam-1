@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Projectile
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - Player
   - Projectile
   - Ground
-  - 
-  - 
+  - End
+  - Start
   - 
   - 
   - 
@@ -41,4 +42,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: End
+    uniqueID: 2452884881
+    locked: 0
+  - name: Start
+    uniqueID: 2906508931
     locked: 0

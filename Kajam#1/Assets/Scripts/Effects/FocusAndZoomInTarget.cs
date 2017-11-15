@@ -57,6 +57,7 @@ public class FocusAndZoomInTarget : MonoBehaviour {
 
     public void Deactivate()
     {
+        SoundManager.main.LerpPitchDown(SoundType.BeingPulled);
         Vector3 newPos = playerTransform.position;
         newPos.z = originalZ;
         capCamera.transform.position = newPos;
@@ -71,6 +72,7 @@ public class FocusAndZoomInTarget : MonoBehaviour {
 
     public void Init(Transform target)
     {
+        SoundManager.main.LerpPitchUp(SoundType.BeingPulled);
         Time.timeScale = 0f;
         this.target = target;
         ratio = 0f;

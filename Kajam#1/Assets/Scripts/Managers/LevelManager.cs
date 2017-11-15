@@ -24,18 +24,26 @@ public class LevelManager : MonoBehaviour {
 
 
     [SerializeField]
-    private int currentLevel = 0;
+    private int levelToLoad = 0;
+
+    private void Start()
+    {
+        LoadNextLevel();
+    }
 
     public void LoadNextLevel() {
-        if (currentLevel > levels.Count - 2)
+        if (levelToLoad > levels.Count - 1)
         {
             Debug.Log("The end!");
         } else
         {
-            levels[currentLevel].Deactivate();
-            currentLevel += 1;
-            levels[currentLevel].gameObject.SetActive(true);
-            levels[currentLevel].Init();
+            if (levelToLoad != 0)
+            {
+                levels[levelToLoad - 1].Deactivate();
+            }
+            levels[levelToLoad].gameObject.SetActive(true);
+            levels[levelToLoad].Init();
+            levelToLoad += 1;
         }
     }
 }

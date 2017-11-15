@@ -58,6 +58,7 @@ public class PlayerMove : MonoBehaviour
                 zPosition = originalZPosition;
                 comingOutOfTeleport = false;
                 EnableShooting();
+                SoundManager.main.StopSoundWithDelay(SoundType.BeingPulled, 1f);
             }
             targetPosition = transform.position;
             targetPosition.z = zPosition;

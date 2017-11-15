@@ -49,6 +49,11 @@ public class ProjectileManager : MonoBehaviour {
         return currentProjectile != null;
     }
 
+    public Projectile GetCurrentProjectile ()
+    {
+        return currentProjectile;
+    }
+
     public List<Projectile> GetCurrentProjectiles()
     {
         return projectilePool.GetCurrentProjectiles();

@@ -11,7 +11,8 @@ public enum Action
     MoveRight,
     MoveUp,
     MoveDown,
-    Teleport
+    Teleport,
+    Quit
 }
 
 [System.Serializable]

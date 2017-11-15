@@ -101,7 +101,6 @@ public class CenteredAroundPointsCamera : MonoBehaviour
                 points.Remove(points[i]);
             }
         }
-        Debug.Log("<color=red>" + thisCamera.orthographicSize + "</color>");
         cameraSizeChangeRatio = 0f;
         speed = returnToSingleSpeed;
         //positionFollowSmoothTime = originalPositionFollowSmoothTime;

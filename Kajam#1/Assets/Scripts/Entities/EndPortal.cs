@@ -27,6 +27,9 @@ public class EndPortal : MonoBehaviour
     [Range(1f, 10f)]
     private float zSpeed = 1f;
 
+    [SerializeField]
+    private bool isEnd = true;
+
 
     private float pullSpeed = 5f;
     private float zPosition = 0f;
@@ -41,9 +44,13 @@ public class EndPortal : MonoBehaviour
         {
             if (Vector2.Distance(transform.position, playerRigidbody2D.transform.position) > 2f)
             {
+                if (isEnd)
+                {
+                    SoundManager.main.StopSound(SoundType.BeingPulled);
+                }
                 ResetPlayer();
             }
-            else if (KeyManager.main.GetKeyDown(Action.Teleport) && !ProjectileManager.main.CurrentProjectileIsAlive())
+            else if (isEnd && KeyManager.main.GetKeyDown(Action.Teleport) && !ProjectileManager.main.CurrentProjectileIsAlive())
             {
                 playerMove.DisableShooting();
                 focusCamera.Init(transform);
@@ -78,8 +85,17 @@ public class EndPortal : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collider)
     {
+
         if (collider.gameObject.tag == "Player")
         {
+            if (!hasHit)
+            {
+                hasHit = true;
+                if (isEnd)
+                {
+                    SoundManager.main.PlaySoundIfNotPlaying(SoundType.BeingPulled);
+                }
+            }
             float dist = Vector2.Distance(transform.position, collider.transform.position);
             float pullMass = myMass;
             if (dist < 0.5f)
@@ -123,7 +139,15 @@ public class EndPortal : MonoBehaviour
         if (collider.gameObject.tag == "Player" && !hasHit)
         {
             hasHit = true;
+            if (isEnd)
+            {
+                SoundManager.main.PlaySoundIfNotPlaying(SoundType.BeingPulled);
+            }
             ProjectileManager.main.KillCurrentProjectile();
+            if (playerRigidbody2D == null)
+            {
+                playerRigidbody2D = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
+            }
             playerRigidbody2D.angularDrag = 1f;
         }
     }

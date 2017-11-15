@@ -5,7 +5,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class Projectile : MonoBehaviour {
+public class Projectile : MonoBehaviour
+{
 
     [SerializeField]
     private Rigidbody2D rigidBody2D;
@@ -35,9 +36,9 @@ public class Projectile : MonoBehaviour {
     private Color inactiveColor;
 
     private bool isActive = false;
-    public bool IsActive { get { return isActive;  } }
+    public bool IsActive { get { return isActive; } }
 
-    public void Init (Vector3 startingPosition, Quaternion rotation, float speed, CenteredAroundPointsCamera centeredCamera, Transform bottomBorder)
+    public void Init(Vector3 startingPosition, Quaternion rotation, float speed, CenteredAroundPointsCamera centeredCamera, Transform bottomBorder)
     {
         lifeTimer = 0f;
         rigidBody2D.isKinematic = false;
@@ -52,13 +53,14 @@ public class Projectile : MonoBehaviour {
         isActive = true;
     }
 
-    public void SetPool (ProjectilePool newPool)
+    public void SetPool(ProjectilePool newPool)
     {
         sr = GetComponent<SpriteRenderer>();
         pool = newPool;
     }
 
-    void Update () {
+    void Update()
+    {
         if (isActive)
         {
             Vector2 velocity = rigidBody2D.velocity;
@@ -72,7 +74,8 @@ public class Projectile : MonoBehaviour {
         if (!stationary && cachedPosition == transform.position)
         {
             stationary = true;
-        } else
+        }
+        else
         {
             cachedPosition = transform.position;
         }
@@ -81,13 +84,19 @@ public class Projectile : MonoBehaviour {
             lifeTimer += Time.deltaTime;
             if (lifeTimer > lifeTime)
             {
-                Die();
+                if (ProjectileManager.main.GetCurrentProjectile() == this)
+                {
+                    ProjectileManager.main.KillCurrentProjectile();
+                } else
+                {
+                    Die();
+                }
             }
         }
-        
+
     }
 
-    public void Deactivate ()
+    public void Deactivate()
     {
         centeredCamera.RemovePoint(transform);
         isActive = false;
@@ -116,8 +125,13 @@ public class Projectile : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player") {
+        if (collision.gameObject.tag == "Player")
+        {
             Die();
+        }
+        else if (collision.gameObject.tag == "Wall")
+        {
+            SoundManager.main.PlayRandomSound(SoundType.ProjectileHitWall);
         }
     }
 
