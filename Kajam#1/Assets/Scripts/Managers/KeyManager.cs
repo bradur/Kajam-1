@@ -12,7 +12,11 @@ public enum Action
     MoveUp,
     MoveDown,
     Teleport,
-    Quit
+    Quit,
+    QuitForReal,
+    MuteSfx,
+    MuteMusic,
+    Restart
 }
 
 [System.Serializable]
@@ -46,41 +50,52 @@ public class KeyManager : MonoBehaviour
 
     public bool GetKeyDown(Action action)
     {
-        if (Input.GetKeyDown(GetKeyCode(action)))
+        foreach (KeyCode kc in GetKeyCode(action))
         {
-            return true;
+            if (Input.GetKeyDown(kc))
+            {
+                return true;
+            }
         }
         return false;
     }
 
     public bool GetKeyUp(Action action)
     {
-        if (Input.GetKeyUp(GetKeyCode(action)))
+        foreach (KeyCode kc in GetKeyCode(action))
         {
-            return true;
+            if (Input.GetKeyUp(kc))
+            {
+                return true;
+            }
         }
+
         return false;
     }
 
     public bool GetKey(Action action)
     {
-        if (Input.GetKey(GetKeyCode(action)))
+        foreach (KeyCode kc in GetKeyCode(action))
         {
-            return true;
+            if (Input.GetKey(kc))
+            {
+                return true;
+            }
         }
         return false;
     }
 
-    public KeyCode GetKeyCode(Action action)
+    public List<KeyCode> GetKeyCode(Action action)
     {
+        List<KeyCode> keys = new List<KeyCode>();
         foreach (GameKey gameKey in gameKeys)
         {
             if (gameKey.action == action)
             {
-                return gameKey.key;
+                keys.Add(gameKey.key);
             }
         }
-        return KeyCode.None;
+        return keys;
     }
 
     public string GetKeyString(Action action)

@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: f430ba697fdafc346af9ddd4ee9c0b9b
+timeCreated: 1510851356
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Blackout
+  fontNames:
+  - Blackout
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 048fbf5b82589ae4189a07f506af138c, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -61,7 +61,9 @@ public class PlayerShootProjectile : MonoBehaviour {
             {
                 SoundManager.main.PlayActionSound(Action.Teleport);
                 playerTransform.transform.position = (Vector2)currentProjectile.transform.position;
-                currentProjectile.Die();
+                ProjectileManager.main.KillCurrentProjectile();
+                currentProjectile = null;
+                //currentProjectile.Die();
             }
         }
     }

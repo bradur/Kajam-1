@@ -58,7 +58,6 @@ public class PlayerMove : MonoBehaviour
                 zPosition = originalZPosition;
                 comingOutOfTeleport = false;
                 EnableShooting();
-                SoundManager.main.StopSoundWithDelay(SoundType.BeingPulled, 1f);
             }
             targetPosition = transform.position;
             targetPosition.z = zPosition;
@@ -80,6 +79,10 @@ public class PlayerMove : MonoBehaviour
 
             if (KeyManager.main.GetKey(Action.MoveLeft))
             {
+                if (playerAimer.right.x > 0f)
+                {
+                    playerAimer.right = -Vector2.right;
+                }
                 velocityX = rigidBody2D.velocity.x - speedInterval;
                 if (Mathf.Abs(velocityX) > maxSpeed)
                 {
@@ -90,6 +93,10 @@ public class PlayerMove : MonoBehaviour
             }
             else if (KeyManager.main.GetKey(Action.MoveRight))
             {
+                if (playerAimer.right.x < 0f)
+                {
+                    playerAimer.right = Vector2.right;
+                }
                 velocityX = rigidBody2D.velocity.x + speedInterval;
                 if (velocityX > maxSpeed)
                 {

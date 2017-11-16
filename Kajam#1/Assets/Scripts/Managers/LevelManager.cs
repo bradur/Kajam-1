@@ -31,6 +31,11 @@ public class LevelManager : MonoBehaviour {
         LoadNextLevel();
     }
 
+    public void SetLevelStart()
+    {
+        levelToLoad = 1;
+    }
+
     public void LoadNextLevel() {
         if (levelToLoad > levels.Count - 1)
         {
@@ -40,6 +45,9 @@ public class LevelManager : MonoBehaviour {
             if (levelToLoad != 0)
             {
                 levels[levelToLoad - 1].Deactivate();
+            } else if (levelToLoad == 1)
+            {
+                levels[levels.Count - 1].Deactivate();
             }
             levels[levelToLoad].gameObject.SetActive(true);
             levels[levelToLoad].Init();

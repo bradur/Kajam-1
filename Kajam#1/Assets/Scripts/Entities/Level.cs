@@ -13,6 +13,12 @@ public class Level : MonoBehaviour
 
     private float originalGravity = 5f;
 
+    [SerializeField]
+    private bool startMusic = false;
+
+    [SerializeField]
+    private bool theEnd = false;
+
     void Start()
     {
         Init();
@@ -30,6 +36,14 @@ public class Level : MonoBehaviour
 
     public void Init()
     {
+        if (startMusic)
+        {
+            SoundManager.main.StartMusic();
+        }
+        if (theEnd)
+        {
+            LevelManager.main.SetLevelStart();
+        }
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.GetComponent<Rigidbody2D>().gravityScale = 0f;
         float originalZ = player.transform.position.z;

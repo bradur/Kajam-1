@@ -30,12 +30,18 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private AudioSource musicSource;
 
+    [SerializeField]
+    private AudioSource introSource;
+
+
     private List<GameSound> lerpPitchSounds = new List<GameSound>();
 
     private float maxPitch = 2.5f;
     private float pitchLerpSpeedUp = 0.2f;
-    private float minPitch = 1f;
+    private float minPitch = 2f;
     private float pitchLerpSpeedDown = 0.1f;
+
+    private bool isIntro = true;
 
     void Awake()
     {
@@ -66,7 +72,7 @@ public class SoundManager : MonoBehaviour
                     if (Mathf.Abs(gameSound.sound.pitch - minPitch) < 0.01f)
                     {
                         gameSound.lerpingDown = false;
-                        gameSound.sound.pitch = minPitch;
+                        gameSound.sound.pitch = 1f;
                     }
                 }
                 else
@@ -85,14 +91,66 @@ public class SoundManager : MonoBehaviour
 
     private void Start()
     {
-        if (musicMuted)
+        if (!musicMuted)
         {
-            musicSource.Pause();
-            //UIManager.main.ToggleMusic();
+            introSource.Play();
         }
-        else
+    }
+
+    IEnumerator FadeOut(AudioSource audioSource, float fadeTime)
+    {
+        float startVolume = audioSource.volume;
+        while (audioSource.volume > 0)
         {
-            musicSource.Play();
+            audioSource.volume -= startVolume * Time.deltaTime / fadeTime;
+            yield return null;
+        }
+
+        audioSource.Stop();
+        audioSource.volume = startVolume;
+    }
+
+    public void FadeOutSound(SoundType soundType)
+    {
+        if (!sfxMuted)
+        {
+            foreach (GameSound gameSound in sounds)
+            {
+                if (gameSound.soundType == soundType)
+                {
+                    StartCoroutine(FadeOut(gameSound.sound, 1.5f));
+                }
+            }
+        }
+    }
+
+
+    public void PlaySoundAndLoopIt(SoundType soundType)
+    {
+        if (!sfxMuted)
+        {
+            foreach (GameSound gameSound in sounds)
+            {
+                if (gameSound.soundType == soundType)
+                {
+                    gameSound.sound.loop = true;
+                    gameSound.sound.Play();
+                }
+            }
+        }
+    }
+
+    public void StopLoopingSound(SoundType soundType)
+    {
+        if (!sfxMuted)
+        {
+            foreach (GameSound gameSound in sounds)
+            {
+                if (gameSound.soundType == soundType)
+                {
+                    gameSound.sound.loop = false;
+                }
+            }
         }
     }
 
@@ -129,6 +187,27 @@ public class SoundManager : MonoBehaviour
                 if (gameSound.soundType == soundType)
                 {
                     StartCoroutine(DelayedStop(gameSound.sound, delay));
+                }
+            }
+        }
+    }
+
+
+    IEnumerator DelayedLoopStop(AudioSource sound, float time)
+    {
+        yield return new WaitForSeconds(time);
+        sound.loop = false;
+    }
+
+    public void StopLoopingSoundWithDelay(SoundType soundType, float delay)
+    {
+        if (!sfxMuted)
+        {
+            foreach (GameSound gameSound in sounds)
+            {
+                if (gameSound.soundType == soundType)
+                {
+                    StartCoroutine(DelayedLoopStop(gameSound.sound, delay));
                 }
             }
         }
@@ -226,16 +305,46 @@ public class SoundManager : MonoBehaviour
         //UIManager.main.ToggleSfx();
     }
 
+    IEnumerator DelayedStart(AudioSource sound, float time)
+    {
+        yield return new WaitForSeconds(time);
+        sound.Play();
+    }
+
+
+    public void StartMusic()
+    {
+        isIntro = false;
+        if (!musicMuted)
+        {
+            StartCoroutine(FadeOut(introSource, 0.2f));
+            musicSource.Play();
+        }
+    }
+
     public bool ToggleMusic()
     {
         musicMuted = !musicMuted;
         if (musicMuted)
         {
-            musicSource.Pause();
+            if (isIntro)
+            {
+                introSource.Pause();
+            } else
+            {
+                musicSource.Pause();
+            }
         }
         else
         {
-            musicSource.Play();
+            if (isIntro)
+            {
+                introSource.Play();
+            }
+            else
+            {
+                musicSource.Play();
+            }
         }
         //UIManager.main.ToggleMusic();
         return musicMuted;

@@ -29,7 +29,8 @@ public class EndPortal : MonoBehaviour
 
     [SerializeField]
     private bool isEnd = true;
-
+    [SerializeField]
+    private bool playsSound = true;
 
     private float pullSpeed = 5f;
     private float zPosition = 0f;
@@ -44,9 +45,9 @@ public class EndPortal : MonoBehaviour
         {
             if (Vector2.Distance(transform.position, playerRigidbody2D.transform.position) > 2f)
             {
-                if (isEnd)
+                if (isEnd && playsSound)
                 {
-                    SoundManager.main.StopSound(SoundType.BeingPulled);
+                    SoundManager.main.FadeOutSound(SoundType.BeingPulled);
                 }
                 ResetPlayer();
             }
@@ -91,7 +92,7 @@ public class EndPortal : MonoBehaviour
             if (!hasHit)
             {
                 hasHit = true;
-                if (isEnd)
+                if (isEnd && playsSound)
                 {
                     SoundManager.main.PlaySoundIfNotPlaying(SoundType.BeingPulled);
                 }
@@ -139,11 +140,11 @@ public class EndPortal : MonoBehaviour
         if (collider.gameObject.tag == "Player" && !hasHit)
         {
             hasHit = true;
-            if (isEnd)
+            if (isEnd && playsSound)
             {
                 SoundManager.main.PlaySoundIfNotPlaying(SoundType.BeingPulled);
+                ProjectileManager.main.KillCurrentProjectile();
             }
-            ProjectileManager.main.KillCurrentProjectile();
             if (playerRigidbody2D == null)
             {
                 playerRigidbody2D = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
